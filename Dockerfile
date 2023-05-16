@@ -1,39 +1,38 @@
-# Base image
-FROM php:8.1-fpm
+# Use the official Ubuntu 18.04 LTS image as the base image
+FROM ubuntu:18.04
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP
+RUN apt-get update && apt-get install -y php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libonig-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copy application files
+# Copy project files
 COPY . .
 
-# Install project dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install dependencies
+RUN composer install --no-interaction --no-scripts --no-plugins
 
-# Generate application key
+# Generate key
 RUN php artisan key:generate
 
-# Set file permissions
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Expose port 80
+EXPOSE 80
 
-# Expose port 9000 (default for PHP-FPM)
-EXPOSE 9000
-
-# Start PHP-FPM
+# Start the PHP FPM server
 CMD ["php-fpm"]
-
