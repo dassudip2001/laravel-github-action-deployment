@@ -1,5 +1,5 @@
-# Use the official Ubuntu 18.04 LTS image as the base image
-FROM ubuntu:18.04
+# Use the official Ubuntu 22.04 LTS image as the base image
+FROM ubuntu:22.04
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
@@ -10,11 +10,22 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP
-RUN apt-get update && apt-get install -y php php-cli php-fpm php-json php-pdo php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath
+# Install PHP and necessary extensions
+RUN apt-get update && apt-get install -y \
+    php8.1-cli \
+    php8.1-fpm \
+    php8.1-json \
+    php8.1-pdo \
+    php8.1-mysql \
+    php8.1-zip \
+    php8.1-gd \
+    php8.1-mbstring \
+    php8.1-curl \
+    php8.1-xml \
+    php8.1-pear \
+    php8.1-bcmath
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -35,4 +46,4 @@ RUN php artisan key:generate
 EXPOSE 80
 
 # Start the PHP FPM server
-CMD ["php-fpm"]
+CMD ["php-fpm8.1"]
