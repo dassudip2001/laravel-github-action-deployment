@@ -1,5 +1,5 @@
 # Use the official Ubuntu 18.04 LTS image as the base image
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP and necessary extensions
 RUN apt-get update && apt-get install -y \
-    php8.1 \
     php8.1-cli \
     php8.1-fpm \
     php8.1-pdo \
