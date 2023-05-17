@@ -1,5 +1,5 @@
-# Use the official Ubuntu 22.04 LTS image as the base image
-FROM ubuntu:22.04
+# Use the official Ubuntu 18.04 LTS image as the base image
+FROM ubuntu:18.04
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y \
     php8.1-mbstring \
     php8.1-curl \
     php8.1-xml \
-    php8.1-pear \
     php8.1-bcmath
 
 # Install Composer
