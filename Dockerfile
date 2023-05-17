@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP and necessary extensions
 RUN apt-get update && apt-get install -y \
+    php8.1 \
     php8.1-cli \
     php8.1-fpm \
     php8.1-pdo \
