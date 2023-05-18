@@ -1,39 +1,26 @@
-# Base image
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Install dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    curl \
     libonig-dev \
     libzip-dev \
-    zip \
     unzip \
-    git
+    zip
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-install pdo_mysql && \
+    docker-php-ext-install zip
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy application files
+WORKDIR /var/www/html
+
 COPY . .
 
-# Install project dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install
 
-# Generate application key
-RUN php artisan key:generate
+RUN cp .env.example .env        
 
-# Set file permissions
-RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Expose port 9000 (default for PHP-FPM)
-EXPOSE 9000
+RUN php artisan optimize
 
-# Start PHP-FPM
-CMD ["php-fpm"]
-
+CMD php artisan serve --host=0.0.0.0 --port=8000
